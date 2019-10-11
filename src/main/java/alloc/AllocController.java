@@ -26,7 +26,7 @@ public class AllocController {
     @Autowired
     ShibRepository shibRepository;
     
-    
+    /*
     @RequestMapping("/id")
     public Shibpid control(@RequestParam(value="idshib" )String idShib) {
     	log.warn("idShib = {}", idShib);
@@ -45,7 +45,7 @@ public class AllocController {
     	
     	return opt.get();
     }
-    
+    */
     @PostMapping(
 			path="/alloc", 
 			consumes = "application/json", 

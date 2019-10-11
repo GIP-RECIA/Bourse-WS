@@ -1,6 +1,5 @@
 package alloc;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,10 +9,8 @@ import javax.persistence.Table;
 public class Shibpid {
 	
 	@Id
-	@Column(name = "persistentId")
 	String persistentId;
 	
-	@Column(name = "principalName")
 	String principalName;
 	
 }
