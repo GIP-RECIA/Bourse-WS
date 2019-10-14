@@ -60,11 +60,11 @@ public class AllocController {
     	}
 		Reponse reponse = new Reponse();
 		
-		reponse.id = shibpid.persistentId;
-		reponse.uid = shibpid.principalName;
+		reponse.id = shibpid.id;
+		reponse.uid = shibpid.uid;
 		
-		log.info("reponse.uid {}", reponse);
+		log.info("reponse.uid {}", shibpid);
 		
-		return new ResponseEntity<Object>(CsvReader.niveau(ldapRepository.findIneByUid(reponse)) , HttpStatus.OK);
+		return new ResponseEntity<Object>(CsvReader.niveau(ldapRepository.findIneByUid(shibpid)) , HttpStatus.OK);
 	}
 }
