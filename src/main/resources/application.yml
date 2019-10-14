@@ -20,3 +20,7 @@ spring:
     password: C2gdcESCO-SARAPIS$
    
 csv.file.name: /home/legay/STS4/workspace/bourses-api/ineAlloc.csv
+
+shibbolet.entity:
+  local: https://ent.netocentre.fr/idp/shibboleth
+  peer: https://ent.yeps.fr/shibboleth

@@ -1,11 +1,9 @@
 package alloc;
 
-import java.util.Collection;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +27,13 @@ public class AllocController {
     @Autowired
     CsvReader CsvReader;
     
+    @Value("${shibbolet.entity.local}")
+    String defaultLocal;
+    
+    @Value("${shibbolet.entity.peer}")
+    String defaultPeer;
+    
+    
     @GetMapping(path = "/loaddata")
 	public  ResponseEntity<Object> get() {
 		
@@ -45,30 +50,18 @@ public class AllocController {
     	CsvReader.loadFile();
     	log.warn("post requete =  {}", requete);
     	
-    	Shibpid shibpid = new Shibpid();
     	
-    	shibpid.setPersistentId(requete.id);
     	
-    //	Collection<Shibpid> col =  shibRepository.findByModel(shibpid.getPersistentId(), shibpid.getLocalEntity(), shibpid.getPeerEntity());
-    //	if (col == null || col.isEmpty()) {
+    	log.info("Call indByRealKey {} {} {} ", requete.id, defaultLocal, defaultPeer);
+    	Shibpid shibpid = shibRepository.findByRealKey(requete.id, defaultLocal, defaultPeer);
     	
-    //		return null;
-    //	}
-    //	shibpid = col.iterator().next();
-    	shibpid = shibRepository.findByModel(shibpid.getPersistentId(), shibpid.getLocalEntity(), shibpid.getPeerEntity());
-    	
-	/*	Optional<Shibpid> opt = shibRepository.findById(requete.id);
-		if (opt.isEmpty()) {
-    		log.warn("c'est vide {}" ,opt.toString());
+    	if (shibpid == null) {
     		return null;
     	}
-    */
 		Reponse reponse = new Reponse();
 		
-	//	reponse.id = opt.get().persistentId;
-	//	reponse.uid = opt.get().principalName; // "F17400f4";
-		reponse.id = shibpid.getPersistentId();
-		reponse.uid = shibpid.getPrincipalName();
+		reponse.id = shibpid.persistentId;
+		reponse.uid = shibpid.principalName;
 		
 		log.info("reponse.uid {}", reponse);
 		

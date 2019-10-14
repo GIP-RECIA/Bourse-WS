@@ -6,17 +6,18 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
-@Data
+
 @Entity
 @Table(name ="shibpid")
 public class Shibpid {
 	
 	@Id
-	private String persistentId;
+	String persistentId;
 	
-	private String principalName;
+	String principalName;
 	
-	private String localEntity = "https://ent.netocentre.fr/idp/shibboleth";
+	String localEntity ;
 	
-	private String peerEntity = "https://ent.yeps.fr/shibboleth";
+	String peerEntity ;
+	
 }

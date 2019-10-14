@@ -1,8 +1,6 @@
 package alloc;
 
 
-import java.util.Collection;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +14,7 @@ public interface ShibRepository  extends CrudRepository<Shibpid,String> {
 			+ " s.localEntity = :localEntity "
 			+ " and s.persistentId = :persistendId"
 			+ " and s.peerEntity = :peerEntity ")
-	Shibpid findByModel(@Param("persistendId") String shibpid, @Param("localEntity") String localEntity , @Param("peerEntity") String peerEntity) ;
+	Shibpid findByRealKey(@Param("persistendId") String shibpid, @Param("localEntity") String localEntity , @Param("peerEntity") String peerEntity) ;
 	
 	
 }
