@@ -1,23 +1,25 @@
 package alloc;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 
 @Data
 
 public class Reponse {
-	String id;
 	
+	String id;
 	boolean boursier = false;
 	
+	@JsonIgnore
 	String uid;
 	
-	Reponse(Shibpid shib) {
-		if (shib != null) {
-			id = shib.persistentId;
-			uid = shib.principalName;
-			boursier = true;
-		}
-	}
+	@JsonIgnore
+	String ine;
+	
+	Integer niveau;
+	
+	Reponse(){};
 	
 }

@@ -12,3 +12,11 @@ spring:
 # pour permettre les majuscules dans les noms de colonne mysql:
     hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
+  ldap:
+    anonymous-read-only: false
+    urls: ldap://pigeon.giprecia.net:389
+    base: dc=esco-centre,dc=fr
+    username: cn=sarapis,ou=administrateurs,dc=esco-centre,dc=fr
+    password: C2gdcESCO-SARAPIS$
+   
+csv.file.name: /home/legay/STS4/workspace/bourses-api/ineAlloc.csv
