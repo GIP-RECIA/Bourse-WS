@@ -58,10 +58,6 @@ public class AllocController {
     	if (shibpid == null) {
     		return null;
     	}
-		Reponse reponse = new Reponse();
-		
-		reponse.id = shibpid.id;
-		reponse.uid = shibpid.uid;
 		
 		log.info("reponse.uid {}", shibpid);
 		

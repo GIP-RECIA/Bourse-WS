@@ -7,6 +7,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import lombok.Data;
 
@@ -29,6 +31,7 @@ public class Shibpid {
 	@JsonIgnore
 	String peerEntity ;
 	
+	
 	@Transient
 	boolean boursier = false;
 	
@@ -37,6 +40,7 @@ public class Shibpid {
 	@JsonIgnore
 	String ine;
 	
+	@JsonInclude(Include.NON_NULL)
 	@Transient
 	Integer niveau;
 	

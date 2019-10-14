@@ -27,22 +27,6 @@ public class LdapRepository {
 		}
 	};
 	
-	public Reponse findIneByUid(Reponse rep) {
-		SearchControls sc = new SearchControls();
-		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        sc.setTimeLimit(THREE_SECONDS);
-        sc.setCountLimit(10);
-        sc.setReturningAttributes(new String[]{"ENTEleveINE"});
-
-        String filter = "(&(objectclass=ENTEleve)(uid=" + rep.uid + "))";
-        List<String> l = ldapTemplate.search("ou=people", filter, sc, ineAttributesMapper);
-        
-        if (l == null || l.isEmpty()) {
-        	rep.id = "";
-        } else rep.ine = l.get(0);
-        
-        return rep;
-	}
 	
 	public Shibpid findIneByUid(Shibpid rep) {
 		SearchControls sc = new SearchControls();
