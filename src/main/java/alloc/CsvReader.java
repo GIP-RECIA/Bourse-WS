@@ -54,7 +54,7 @@ public class CsvReader {
 	
 	
 	
-	public Shibpid niveau(Shibpid rep) {
+	public ShibBean niveau(ShibBean rep) {
 		if (rep != null) {
 			rep.niveau = ine2niveau.get(rep.ine);
 			rep.boursier = rep.niveau != null && rep.niveau > 0;

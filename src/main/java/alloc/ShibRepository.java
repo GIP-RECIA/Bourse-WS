@@ -8,13 +8,11 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ShibRepository  extends CrudRepository<Shibpid,String> { 
+public interface ShibRepository  extends CrudRepository<ShibBean,String> { 
 
-	@Query(value = "select s from Shibpid s where "
+	@Query(value = "select s from ShibBean s where "
 			+ " s.localEntity = :localEntity "
 			+ " and s.id = :persistendId"
 			+ " and s.peerEntity = :peerEntity ")
-	Shibpid findByRealKey(@Param("persistendId") String uid, @Param("localEntity") String localEntity , @Param("peerEntity") String peerEntity) ;
-	
-	
+	ShibBean findByRealKey(@Param("persistendId") String uid, @Param("localEntity") String localEntity , @Param("peerEntity") String peerEntity) ;
 }

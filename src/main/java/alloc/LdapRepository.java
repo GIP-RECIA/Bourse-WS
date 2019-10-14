@@ -28,7 +28,7 @@ public class LdapRepository {
 	};
 	
 	
-	public Shibpid findIneByUid(Shibpid rep) {
+	public ShibBean findIneByUid(ShibBean rep) {
 		SearchControls sc = new SearchControls();
 		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
         sc.setTimeLimit(THREE_SECONDS);

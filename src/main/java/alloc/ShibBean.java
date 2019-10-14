@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name ="shibpid")
-public class Shibpid {
+public class ShibBean {
 	
 	@Id
 	@Column(name="persistentId")

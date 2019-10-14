@@ -53,7 +53,7 @@ public class AllocController {
     	
     	
     	log.info("Call indByRealKey {} {} {} ", requete.id, defaultLocal, defaultPeer);
-    	Shibpid shibpid = shibRepository.findByRealKey(requete.id, defaultLocal, defaultPeer);
+    	ShibBean shibpid = shibRepository.findByRealKey(requete.id, defaultLocal, defaultPeer);
     	
     	if (shibpid == null) {
     		return null;
