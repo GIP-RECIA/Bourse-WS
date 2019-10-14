@@ -44,5 +44,8 @@ public class ShibBean {
 	@Transient
 	Integer niveau;
 	
+	@JsonInclude(Include.NON_NULL)
+	@Transient
+	EError error;
 	
 }

@@ -3,6 +3,7 @@ package alloc;
 import java.util.List;
 
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 
@@ -23,7 +24,10 @@ public class LdapRepository {
 	private static AttributesMapper<String> ineAttributesMapper =  new AttributesMapper<String>() {
 		@Override
 		public String mapFromAttributes(Attributes attributes) throws NamingException {
-			return (String)attributes.get("ENTEleveIne").get();
+			Attribute attr = attributes.get("ENTEleveIne");
+			if (attr != null)
+				return (String)attributes.get("ENTEleveIne").get();
+			return null;
 		}
 	};
 	
@@ -40,7 +44,13 @@ public class LdapRepository {
         
         if (l == null || l.isEmpty()) {
         	rep.id = "";
-        } else rep.ine = l.get(0);
+        	rep.error = EError.INCONNU;
+        } else {
+        	rep.ine = l.get(0);
+        	if (rep.ine == null) {
+        		rep.error = EError.INCOMPLET;
+        	}
+        }
         
         return rep;
 	}
