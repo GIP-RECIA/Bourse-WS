@@ -48,26 +48,45 @@ public class AllocController {
     
     @GetMapping(path = "/test")
 	public  ResponseEntity<Object> testAll() {
+    	CsvReader.loadFile();
     	List<ShibBean> allBoursier = new ArrayList<>();
     	
-    	int cpt = 0;
     	int nbBourse =0;
+    	int nbAutre = 0;
+    	int nbIconnue = 0;
+    	int nbIncomplet = 0;
+    	
     	Iterable<ShibBean> all = shibRepository.findAll();
     	for (ShibBean shib : all) {
+    		boolean add = false;
     		if (shib != null) {
-    			if (0 == cpt++ % 10) {
-    				CsvReader.niveau(ldapRepository.findIneByUid(shib));
-    				
-    				if (shib.boursier) {
-    					nbBourse++;
-    					allBoursier.add(shib);
-    					log.info("boursier {}" , shib);
-    				}
-    				
+    			ShibBean shibBean = CsvReader.niveau(ldapRepository.findIneByUid(shib));
+    			if (shibBean.error != null) {
+					switch (shibBean.error) {
+						case INCONNU:
+								add = nbIconnue++ < 10;
+							break;
+						case INCOMPLET:
+								add = nbIncomplet++ < 10;
+						default:
+							add = true;
+							break;
+					}
+    			} else if (shibBean.boursier) {
+    				add = nbBourse++ < 10;
+    				log.info("boursier {}" , shibBean);
+    				if (!add) {
+    					break;
+    				} 
+    			} else {
+					add = nbAutre++ < 10;
     			}
-    		}
+    			if (add) {
+    				allBoursier.add(shibBean);
+    			}
+    		} 
     	}
-    	log.info("total boursier {}" , nbBourse);
+    	log.info("total boursier={} inconnue ={} incomplet={} nonBoursier" , nbBourse, nbIconnue, nbIncomplet , nbAutre);
     	return new ResponseEntity<Object>(allBoursier,  HttpStatus.OK);
     }
     @PostMapping(
