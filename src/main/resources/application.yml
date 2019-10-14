@@ -1,13 +1,23 @@
+server:
+  address: 192.168.45.196
+  port: 8443
+  ssl:
+    enabled: true
+    #
+    key-alias: tomcat-localhost
+  #  key-password: 
+    key-store: ....................
+  #  key-store-password: 
 
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/shibboleth
     username: alloc
-    password: allocDemo
+  #  password: 
     
   jpa:
     properties:
-      hibernate.show_sql: true
+      hibernate.show_sql: false
       hibernate.ddl-auto: none
 # pour permettre les majuscules dans les noms de colonne mysql:
     hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
@@ -17,9 +27,9 @@ spring:
     urls: ldap://pigeon.giprecia.net:389
     base: dc=esco-centre,dc=fr
     username: cn=sarapis,ou=administrateurs,dc=esco-centre,dc=fr
-    password: C2gdcESCO-SARAPIS$
+  #  password: 
    
-csv.file.name: /home/legay/STS4/workspace/bourses-api/ineAlloc.csv
+#csv.file.name: .........
 
 shibbolet.entity:
   local: https://ent.netocentre.fr/idp/shibboleth
