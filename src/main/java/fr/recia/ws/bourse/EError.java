@@ -1,4 +1,4 @@
-package alloc;
+package fr.recia.ws.bourse;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

@@ -1,4 +1,4 @@
-package alloc;
+package fr.recia.ws.bourse;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;

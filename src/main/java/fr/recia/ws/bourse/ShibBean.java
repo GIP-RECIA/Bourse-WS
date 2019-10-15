@@ -1,4 +1,4 @@
-package alloc;
+package fr.recia.ws.bourse;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -9,7 +9,7 @@ server:
     key-store: ....................
   #  key-store-password: 
   servlet:
-    contextPath: /alloc
+    contextPath: /niveau-bourse
 
 spring:
   datasource:

@@ -1,4 +1,4 @@
-package alloc;
+package fr.recia.ws.bourse;
 
 import java.util.ArrayList;
 import java.util.List;
