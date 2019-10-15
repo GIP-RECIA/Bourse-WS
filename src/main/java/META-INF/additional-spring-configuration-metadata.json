@@ -3,5 +3,15 @@
     "name": "csv.file.name",
     "type": "java.lang.String",
     "description": "A description for 'csv.file.name'"
+  },
+  {
+    "name": "allowed.ip.list.intern",
+    "type": "java.lang.String",
+    "description": "A description for 'allowed.ip.list'"
+  },
+  {
+    "name": "allowed.ip.list.extern",
+    "type": "java.lang.String",
+    "description": "A description for 'allowed.ip.list'"
   }
 ]}

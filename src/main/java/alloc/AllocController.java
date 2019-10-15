@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/alloc")
+@RequestMapping(path = "/")
 public class AllocController {
 
     private static final Logger log = LoggerFactory.getLogger(AllocController.class);
@@ -39,12 +39,10 @@ public class AllocController {
     
     @GetMapping(path = "/loaddata")
 	public  ResponseEntity<Object> get() {
-		
     	Integer nbDataLoaded = CsvReader.loadFile();
-    	
-    	
 		return new ResponseEntity<Object>(nbDataLoaded, HttpStatus.OK);
 	}
+    
     
     @GetMapping(path = "/test")
 	public  ResponseEntity<Object> testAll() {
@@ -74,7 +72,7 @@ public class AllocController {
 					}
     			} else if (shibBean.boursier) {
     				add = nbBourse++ < 10;
-    				log.info("boursier {}" , shibBean);
+    				log.debug("boursier {}" , shibBean);
     				if (!add) {
     					break;
     				} 
@@ -86,7 +84,7 @@ public class AllocController {
     			}
     		} 
     	}
-    	log.info("total boursier={} inconnue ={} incomplet={} nonBoursier" , nbBourse, nbIconnue, nbIncomplet , nbAutre);
+    	log.debug("total boursier={} inconnue ={} incomplet={} nonBoursier= {}" , nbBourse, nbIconnue, nbIncomplet , nbAutre);
     	return new ResponseEntity<Object>(allBoursier,  HttpStatus.OK);
     }
     @PostMapping(
@@ -96,18 +94,16 @@ public class AllocController {
 		)
 	public ResponseEntity<Object> post( @RequestBody Requete requete) {
     	CsvReader.loadFile();
-    	log.warn("post requete =  {}", requete);
+    	log.debug("post requete =  {}", requete);
     	
-    	
-    	
-    	log.info("Call indByRealKey {} {} {} ", requete.id, defaultLocal, defaultPeer);
     	ShibBean shibpid = shibRepository.findByRealKey(requete.id, defaultLocal, defaultPeer);
     	
     	if (shibpid == null) {
-    		return null;
+    		shibpid = new ShibBean();
+    		shibpid.error = EError.INVALIDE;
+    		return new ResponseEntity<Object>(shibpid, HttpStatus.OK);
     	}
 		
-		log.info("reponse.uid {}", shibpid);
 		
 		return new ResponseEntity<Object>(CsvReader.niveau(ldapRepository.findIneByUid(shibpid)) , HttpStatus.OK);
 	}

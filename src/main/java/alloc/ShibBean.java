@@ -19,7 +19,7 @@ public class ShibBean {
 	
 	@Id
 	@Column(name="persistentId")
-	String id;
+	String id = "";
 	
 	@JsonIgnore
 	@Column(name="principalName")
