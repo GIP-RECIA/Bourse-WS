@@ -87,13 +87,14 @@ public class AllocController {
     	log.debug("total boursier={} inconnue ={} incomplet={} nonBoursier= {}" , nbBourse, nbIconnue, nbIncomplet , nbAutre);
     	return new ResponseEntity<Object>(allBoursier,  HttpStatus.OK);
     }
+    
     @PostMapping(
 			path="", 
 			consumes = "application/json", 
 			produces = "application/json"
 		)
 	public ResponseEntity<Object> post( @RequestBody Requete requete) {
-    	CsvReader.loadFile();
+    	
     	log.debug("post requete =  {}", requete);
     	
     	ShibBean shibpid = shibRepository.findByRealKey(requete.id, defaultLocal, defaultPeer);
@@ -103,8 +104,7 @@ public class AllocController {
     		shibpid.error = EError.INVALIDE;
     		return new ResponseEntity<Object>(shibpid, HttpStatus.OK);
     	}
-		
-		
+    	
 		return new ResponseEntity<Object>(CsvReader.niveau(ldapRepository.findIneByUid(shibpid)) , HttpStatus.OK);
 	}
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -26,7 +28,11 @@ public class CsvReader {
 	
 	Map<String, Integer> ine2niveau = new HashMap<>();
 	
+	
+	@PostConstruct
 	public Integer loadFile ()  {
+		Map<String, Integer> inLoadMap = new HashMap<>();
+		
 		int count = 0;
 		try (	Scanner scannerFile = new Scanner(ResourceUtils.getFile(fileName)) ) {
 			log.warn(scannerFile.nextLine());
@@ -38,8 +44,8 @@ public class CsvReader {
 						String ine = scannerLine.next();
 						scannerLine.useDelimiter(P_END);
 						int niveau = scannerLine.nextInt();
-						log.info("ine {} : niveau {}", ine , niveau);
-						ine2niveau.put(ine, niveau);
+						log.debug("ine {} : niveau {}", ine , niveau);
+						inLoadMap.put(ine, niveau);
 						count++;
 					} 
 				} catch (InputMismatchException e) {
@@ -49,6 +55,11 @@ public class CsvReader {
 		} catch (FileNotFoundException e) {
 			log.error("loadFile  filename=" + fileName, e);
 		}
+		if (! inLoadMap.isEmpty()) {
+			synchronized (this) {
+				ine2niveau = inLoadMap;
+			}
+		}
 		return count;
 	}
 	
@@ -56,7 +67,9 @@ public class CsvReader {
 	
 	public ShibBean niveau(ShibBean rep) {
 		if (rep != null && rep.ine != null) {
-			rep.niveau = ine2niveau.get(rep.ine);
+			synchronized (this) {
+				rep.niveau = ine2niveau.get(rep.ine);
+			}
 			rep.boursier = rep.niveau != null && rep.niveau > 0;
 		}
 		return rep;
