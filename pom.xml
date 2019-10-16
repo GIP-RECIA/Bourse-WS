@@ -4,8 +4,8 @@
 
     <groupId>fr.recia</groupId>
     <artifactId>bourse-ws</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
-
+    <version>0.1.2-SNAPSHOT</version>
+	<packaging>war</packaging>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -30,6 +30,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/GIP-RECIA/Bourse-WS.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/GIP-RECIA/Bourse-WS.git</developerConnection>
+		<url>https://github.com/GIP-RECIA/Bourse-WS.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -89,5 +90,19 @@
             </plugin>
         </plugins>
     </build>
-
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
