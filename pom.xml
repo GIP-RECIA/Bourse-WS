@@ -29,8 +29,8 @@
 		</snapshotRepository>
 	</distributionManagement>
 	<scm>
-		<connection>scm:git:ssh://git@github.com:GIP-RECIA/Bourse-WS.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:GIP-RECIA/Bourse-WS.git</developerConnection>
+		<connection>scm:git:ssh://git@github.com/GIP-RECIA/Bourse-WS.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/GIP-RECIA/Bourse-WS.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
