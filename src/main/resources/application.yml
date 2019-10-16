@@ -6,14 +6,16 @@ server:
     #
     key-alias: tomcat-localhost
   #  key-password: 
-    key-store: ....................
+    key-store: classpath:keyStore.jks
+    key-store-provider: SUN
+    key-store-type: JKS
   #  key-store-password: 
   servlet:
     contextPath: /niveau-bourse
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/shibboleth
+    url: jdbc:mysql://chouette.giprecia.net:3306/shibboleth
     username: alloc
   #  password: 
     
