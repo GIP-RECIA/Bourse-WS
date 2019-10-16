@@ -74,7 +74,9 @@ public class CsvReader {
 			synchronized (this) {
 				rep.niveau = ine2niveau.get(rep.ine);
 			}
-			rep.boursier = rep.niveau != null && rep.niveau > 0;
+			if (rep.niveau != null && rep.niveau > 0) {
+				rep.boursier = true;
+			}
 		}
 		return rep;
 	}

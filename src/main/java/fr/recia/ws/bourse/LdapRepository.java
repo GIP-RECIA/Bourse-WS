@@ -17,17 +17,29 @@ import org.springframework.stereotype.Service;
 public class LdapRepository {
 	private static final Integer THREE_SECONDS = 3000;
 	
+	private static class LdapBean {
+		String ine;
+		boolean boursier = false;
+	}
 	
 	@Autowired
     private LdapTemplate ldapTemplate;
 	
-	private static AttributesMapper<String> ineAttributesMapper =  new AttributesMapper<String>() {
+	private static AttributesMapper<LdapBean> ineAttributesMapper =  new AttributesMapper<LdapBean>() {
+		
 		@Override
-		public String mapFromAttributes(Attributes attributes) throws NamingException {
+		public LdapBean mapFromAttributes(Attributes attributes) throws NamingException {
+			LdapBean bean = new LdapBean();
 			Attribute attr = attributes.get("ENTEleveIne");
-			if (attr != null)
-				return (String)attributes.get("ENTEleveIne").get();
-			return null;
+			if (attr != null)  {
+				bean.ine = (String) attr.get();
+			}
+			attr = attributes.get("ENTEleveBoursier");
+			if (attr != null) {
+				String b = (String)attributes.get("ENTEleveBoursier").get();
+				bean.boursier = (b != null && b.equals("O")) ;
+			}
+			return bean;
 		}
 	};
 	
@@ -37,19 +49,23 @@ public class LdapRepository {
 		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
         sc.setTimeLimit(THREE_SECONDS);
         sc.setCountLimit(10);
-        sc.setReturningAttributes(new String[]{"ENTEleveINE"});
+        sc.setReturningAttributes(new String[]{"ENTEleveINE", "ENTEleveBoursier"});
 
         String filter = "(&(objectclass=ENTEleve)(uid=" + rep.uid + "))";
-        List<String> l = ldapTemplate.search("ou=people", filter, sc, ineAttributesMapper);
+        List<LdapBean> l = ldapTemplate.search("ou=people", filter, sc, ineAttributesMapper);
         
         if (l == null || l.isEmpty()) {
         	rep.id = "";
         	rep.error = EError.INCONNU;
         } else {
-        	rep.ine = l.get(0);
-        	if (rep.ine == null) {
+        	LdapBean bean = l.get(0);
+        	if (bean.ine == null) {
         		rep.error = EError.INCOMPLET;
+        	} else {
+        		rep.ine = bean.ine;
         	}
+        	rep.boursier = bean.boursier;
+        	
         }
         
         return rep;
