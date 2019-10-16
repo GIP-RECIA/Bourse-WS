@@ -15,6 +15,7 @@ server:
 
 spring:
   datasource:
+   # driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://chouette.giprecia.net:3306/shibboleth
     username: alloc
   #  password: 
