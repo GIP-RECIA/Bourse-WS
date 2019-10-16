@@ -3,8 +3,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.springframework</groupId>
-    <artifactId>gs-rest-service</artifactId>
+    <groupId>fr.recia</groupId>
+    <artifactId>bourse-ws</artifactId>
     <version>0.1.0</version>
 
     <parent>
@@ -12,6 +12,27 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.6.RELEASE</version>
     </parent>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<login.ent>pierre.legay</login.ent>
+	</properties>
+	
+	<distributionManagement>
+		<repository>
+			<id>esco-releases</id>
+			<url>https://nexus.recia.fr/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>esco-snapshots</id>
+			<url>https://nexus.recia.fr/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:ssh://git@github.com:GIP-RECIA/Bourse-WS.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:GIP-RECIA/Bourse-WS.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
     <dependencies>
         
@@ -60,11 +81,6 @@
         	<scope>test</scope>
         </dependency>
     </dependencies>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
 
     <build>
         <plugins>
