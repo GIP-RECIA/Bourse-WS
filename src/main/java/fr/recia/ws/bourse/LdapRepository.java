@@ -46,7 +46,7 @@ public class LdapRepository {
 	
 	public ShibBean findIneByUid(ShibBean rep) {
 		SearchControls sc = new SearchControls();
-		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		sc.setSearchScope(SearchControls.ONELEVEL_SCOPE);
         sc.setTimeLimit(THREE_SECONDS);
         sc.setCountLimit(10);
         sc.setReturningAttributes(new String[]{"ENTEleveINE", "ENTEleveBoursier"});

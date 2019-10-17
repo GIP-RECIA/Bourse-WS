@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum EError {
 	INCONNU("Compte inconnu"),
 	INCOMPLET("Compte incomplet"), 
-	INVALIDE("Clée invalide");
+	INVALIDE("Clé invalide");
 
 	@JsonValue
 	private String texte;
