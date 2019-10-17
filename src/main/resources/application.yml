@@ -1,24 +1,10 @@
-server:
-  address: 192.168.45.196
-  port: 8443
-  ssl:
-    enabled: true
-    #
-    key-alias: tomcat-localhost
-  #  key-password: 
-    key-store: classpath:keyStore.jks
-    key-store-provider: SUN
-    key-store-type: JKS
-  #  key-store-password: 
-  servlet:
-    contextPath: /niveau-bourse
 
 spring:
   datasource:
-   # driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://chouette.giprecia.net:3306/shibboleth
-    username: alloc
-  #  password: 
+#   driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://chouette.giprecia.net:3306/shibboleth?serverTimezone=Europe/Paris
+    username: bourse
+#  password: 
     
   jpa:
     properties:
@@ -32,7 +18,7 @@ spring:
     urls: ldap://pigeon.giprecia.net:389
     base: dc=esco-centre,dc=fr
     username: cn=sarapis,ou=administrateurs,dc=esco-centre,dc=fr
-  #  password: 
+#   password: 
    
 #csv.file.name: .........
 
@@ -43,8 +29,4 @@ shibbolet.entity:
 allowed.ip.list: 
 #  extern: 192.168.57.117,
   intern: 127.0.0.1,
-
-
-
-
 
