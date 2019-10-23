@@ -200,7 +200,7 @@ foreach my $portail ( @PORTAIL ) {
 if ($nbOk == @PORTAIL) {
 	if (@listFile > $nbFtpFileToKeep) {
 		for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
-			print WRITE "rm $listFile[$cpt]\n";
+			print WRITE "rm $listFile[$cpt]\n\n";
 			&printLog(<READ>);
 			while (<READ>) {
 				last if /^$prompt$/;
