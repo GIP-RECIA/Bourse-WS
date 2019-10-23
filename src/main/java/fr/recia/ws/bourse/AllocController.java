@@ -49,42 +49,63 @@ public class AllocController {
     	CsvReader.loadFileIne();
     	List<ShibBean> allBoursier = new ArrayList<>();
     	
-    	int nbBourse =0;
-    	int nbAutre = 0;
-    	int nbIconnue = 0;
-    	int nbIncomplet = 0;
+    	boolean bourse =false;
+    	boolean autre = false;
+    	boolean inconnue = false;
+    	boolean incomplet = false;
+    	boolean byUid = false;
     	
     	Iterable<ShibBean> all = shibRepository.findAll();
-    	for (ShibBean shib : all) {
+    	for (ShibBean shibBean : all) {
     		boolean add = false;
-    		if (shib != null) {
-    			ShibBean shibBean = CsvReader.niveauByIne(ldapRepository.findIneByUid(shib));
+    		if (shibBean != null) {
+    			evalNiveau(shibBean);
     			if (shibBean.error != null) {
 					switch (shibBean.error) {
 						case INCONNU:
-								add = nbIconnue++ < 10;
+							if (!inconnue) {
+								add = inconnue = true;
+								shibBean.comment = shibBean.oldId + " " + shibBean.uid;
+							}
 							break;
 						case INCOMPLET:
-								add = nbIncomplet++ < 10;
+							if (!incomplet) {
+								add = incomplet = true;
+								shibBean.comment = shibBean.uid;
+							}
+							break;
 						default:
 							add = true;
 							break;
 					}
     			} else if (shibBean.boursier) {
-    				add = nbBourse++ < 10;
-    				log.debug("boursier {}" , shibBean);
-    				if (!add) {
-    					break;
-    				} 
+    				if (shibBean.ine == null) {
+    					if (!byUid) {
+    						add = byUid = true;
+    						shibBean.comment = "Boursier by UID " + shibBean.uid;
+    						log.debug("boursier by uid {}" , shibBean);
+    					}
+    				} else {
+	    				if (!bourse) {
+	    					bourse = add = true;
+	    					shibBean.comment = "Boursier by INE " + shibBean.ine + " " + shibBean.uid;
+	    					log.debug("boursier {}" , shibBean);
+	    				}
+    				}
     			} else {
-					add = nbAutre++ < 10;
+    				if (!autre) {
+    					add = autre = true;
+    					shibBean.comment = shibBean.ine + " " + shibBean.uid;
+    				}
     			}
     			if (add) {
     				allBoursier.add(shibBean);
+    			} 
+    			if (byUid && bourse && inconnue && incomplet && autre) {
+    				break;
     			}
     		} 
     	}
-    	log.debug("total boursier={} inconnue ={} incomplet={} nonBoursier= {}" , nbBourse, nbIconnue, nbIncomplet , nbAutre);
     	return new ResponseEntity<Object>(allBoursier,  HttpStatus.OK);
     }
     
@@ -105,6 +126,15 @@ public class AllocController {
     		return new ResponseEntity<Object>(shibpid, HttpStatus.OK);
     	}
     	
-		return new ResponseEntity<Object>(CsvReader.niveauByIne(ldapRepository.findIneByUid(shibpid)) , HttpStatus.OK);
+    	evalNiveau(shibpid);
+    	
+		return new ResponseEntity<Object>(shibpid , HttpStatus.OK);
 	}
+
+
+    private void evalNiveau(ShibBean shibBean) {
+    	if (! CsvReader.niveauByUId(shibBean).isBoursier()) {
+    		CsvReader.niveauByIne(ldapRepository.findIneByUid(shibBean));
+    	}
+    }
 }

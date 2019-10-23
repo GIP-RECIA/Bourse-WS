@@ -48,4 +48,12 @@ public class ShibBean {
 	@Transient
 	EError error;
 	
+	@JsonInclude(Include.NON_NULL)
+	@Transient
+	String comment;
+	
+	@Transient
+	@JsonIgnore
+	String oldId;
+	
 }

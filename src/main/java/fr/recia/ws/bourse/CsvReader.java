@@ -129,14 +129,10 @@ public class CsvReader {
 	}
 	
 	public ShibBean niveauByIne(ShibBean rep) {
-		if (rep != null && rep.ine != null) {
-			synchronized (this) {
-				rep.niveau = ine2niveau.get(rep.ine);
-			}
-			if (rep.niveau != null && rep.niveau > 0) {
-				rep.boursier = true;
-			}
+		Map<String, Integer> niveaux;
+		synchronized (this) {
+			niveaux = ine2niveau;
 		}
-		return rep;
+		return niveau(rep, rep.ine, niveaux);
 	}
 }

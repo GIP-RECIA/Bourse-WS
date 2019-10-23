@@ -55,6 +55,7 @@ public class LdapRepository {
         List<LdapBean> l = ldapTemplate.search("ou=people", filter, sc, ineAttributesMapper);
         
         if (l == null || l.isEmpty()) {
+        	rep.oldId = rep.id;
         	rep.id = "";
         	rep.error = EError.INCONNU;
         } else {
