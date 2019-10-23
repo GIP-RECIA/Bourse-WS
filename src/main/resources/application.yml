@@ -20,7 +20,9 @@ spring:
 #    username: cn=sarapis,ou=administrateurs,dc=esco-centre,dc=fr
 #   password: 
    
-#csv.file.name: .........
+#csv.file:
+#   name: .........
+#    uid: .....
 
 #shibbolet.entity:
 #  local: https://ent.netocentre.fr/idp/shibboleth

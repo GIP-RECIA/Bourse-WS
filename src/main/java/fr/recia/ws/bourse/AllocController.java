@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AllocController {
 
     private static final Logger log = LoggerFactory.getLogger(AllocController.class);
-    
+    private static final Logger logInfo =  LoggerFactory.getLogger("fr.recia.ws.bourse.infouid");
     @Autowired
     ShibRepository shibRepository;
     
@@ -129,7 +129,9 @@ public class AllocController {
     	}
     	
     	evalNiveau(shibpid);
-    	
+    	if (shibpid.uid != null) {
+    		logInfo.info(shibpid.uid);
+    	}
 		return new ResponseEntity<Object>(shibpid , HttpStatus.OK);
 	}
 
