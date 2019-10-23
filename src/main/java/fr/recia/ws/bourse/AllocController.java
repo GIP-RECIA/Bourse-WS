@@ -39,14 +39,14 @@ public class AllocController {
     
     @GetMapping(path = "/loaddata")
 	public  ResponseEntity<Object> get() {
-    	Integer nbDataLoaded = CsvReader.loadFile();
+    	Integer nbDataLoaded = CsvReader.loadFileIne();
 		return new ResponseEntity<Object>(nbDataLoaded, HttpStatus.OK);
 	}
     
     
     @GetMapping(path = "/test")
 	public  ResponseEntity<Object> testAll() {
-    	CsvReader.loadFile();
+    	CsvReader.loadFileIne();
     	List<ShibBean> allBoursier = new ArrayList<>();
     	
     	int nbBourse =0;
@@ -58,7 +58,7 @@ public class AllocController {
     	for (ShibBean shib : all) {
     		boolean add = false;
     		if (shib != null) {
-    			ShibBean shibBean = CsvReader.niveau(ldapRepository.findIneByUid(shib));
+    			ShibBean shibBean = CsvReader.niveauByIne(ldapRepository.findIneByUid(shib));
     			if (shibBean.error != null) {
 					switch (shibBean.error) {
 						case INCONNU:
@@ -105,6 +105,6 @@ public class AllocController {
     		return new ResponseEntity<Object>(shibpid, HttpStatus.OK);
     	}
     	
-		return new ResponseEntity<Object>(CsvReader.niveau(ldapRepository.findIneByUid(shibpid)) , HttpStatus.OK);
+		return new ResponseEntity<Object>(CsvReader.niveauByIne(ldapRepository.findIneByUid(shibpid)) , HttpStatus.OK);
 	}
 }
