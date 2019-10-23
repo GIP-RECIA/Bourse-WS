@@ -85,9 +85,6 @@ public class CsvReader {
 					log.debug("line = {}", line);
 					if (scannerLine.hasNext()) {
 						String uid =  scannerLine.next();
-						for (int i = 0; i < 3 && scannerLine.hasNext(); i++ ) {
-							scannerLine.next();
-						}
 						if (scannerLine.hasNext()) {
 							int niveau = scannerLine.nextInt();
 							log.debug("uid {} : niveau {}", uid , niveau);

@@ -39,7 +39,9 @@ public class AllocController {
     
     @GetMapping(path = "/loaddata")
 	public  ResponseEntity<Object> get() {
-    	Integer nbDataLoaded = CsvReader.loadFileIne();
+    	Integer nbDataLoaded[] = new Integer[2]; 
+    	nbDataLoaded[0] = CsvReader.loadFileIne();
+    	nbDataLoaded[1] = CsvReader.loadFileUid();
 		return new ResponseEntity<Object>(nbDataLoaded, HttpStatus.OK);
 	}
     
