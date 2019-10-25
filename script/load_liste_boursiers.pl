@@ -27,27 +27,27 @@ my $nbFtpFileToKeep = 2;
 my $sftp = "/usr/bin/sftp -b- $adr_ftp";
 
 #la commande scp
-sub scp(){
+sub scp {
 	my $addr = shift;
 	
 	my $com = "scp $tmpFile ${addr}:$rep_conf_portail";
-	&printLog("$com");
+	printLog("$com");
 	system "$com" || die "scp error: $!";
 }
 
 #la commande curl
-sub curl(){
+sub curl {
 	my $addr = shift;
 	
 	my $result = -1;
 	
 	my $com = sprintf ($curl_format, $addr);
-	&printLog("$com");
+	printLog("$com");
 	open COM, "$com 2> /tmp/curl.error |" or die $!;
 	$line = <COM>;
 	print $line, "\n";
-	if ($line =~ /(\d+)/){
-		$result = $1;
+	if ($line =~ /(\d+),(\d+)/){
+		$result = int($1) + int($2);
 	}
 	close COM;
 	open ERROR, "/tmp/curl.error";
@@ -55,13 +55,13 @@ sub curl(){
 		print ;
 	}
 	close ERROR;
-	&printLog( "$result boursiers ont été chargés");
+	printLog( "$result boursiers ont été chargés");
 	return $result;
 }
 
 
 # print daté 
-sub printLog(){
+sub printLog {
  
 	my @localTime = localtime time;
 	my      $horodatage = sprintf(
@@ -78,21 +78,21 @@ sub printLog(){
 }
 
 #Le controle de la taille du fichier copier:
-sub testSize(){
+sub testSize {
 	my $addr = shift;
 	my $sizeOk = shift;
 	
 	my $com = "ssh $addr 'ls -l ${rep_conf_portail}${fileName}'";
 	open COM, "$com |" or die $!;
-	if ( &size(<COM>) != $sizeOk ){
+	if ( size(<COM>) != $sizeOk ){
 		die "Erreur de copie sur $addr!\n";
 	}
-	&printLog("copie Ok");
+	printLog("copie Ok");
 	close COM;
 }
 
 # recuperation de la taille d'un fichier a partir d'une ligne donnée par ls -l
-sub size(){
+sub size {
 	my $line = shift;
 	my @col = split ('\s+', $line);
 	
@@ -100,12 +100,14 @@ sub size(){
 }
 
 # verification du fichier dans tmp renvoie le nombre de ligne de boursier; 
-sub verifFile(){
+sub verifFile {
 	open FILE, "$tmpFile" or die $!;
 	
 	my $cpt = 0;
-	$_ = <FILE>;
-	die "ERREUR d'entête : $_" unless /^\"id\";\"ine\";\"echelon\"/;
+	{
+		local $_ = <FILE>;
+		die "ERREUR d'entête : $_" unless /^\"id\";\"ine\";\"echelon\"/;
+	}
 	while (<FILE>) {
 		chomp;
 		if ($_) {
@@ -121,10 +123,10 @@ sub verifFile(){
 
 
 #on ouvre la connexion sftp
-&printLog("$sftp");
+printLog("$sftp");
 open2 (READ, WRITE, $sftp ) or die "erreur connexion sftp: $!\n";
 
-&printLog("\t connexion ok");
+printLog("\t connexion ok");
 
 #on recupere une ligne vide pour le prompt
 print WRITE "\n";
@@ -141,14 +143,14 @@ $_=<READ>;
 print WRITE "ls -l ${prefixeFile}_*.csv\n\n";
 
 $_=<READ>;
-&printLog($_);
+printLog($_);
 
 while (<READ>) {
 	last if /^$prompt$/;
 	print($_);
 	if (/(${prefixeFile}_\d{8}\.csv)$/) {
 		push @listFile, $1;
-		$sizeFile{$1} = &size($_);
+		$sizeFile{$1} = size($_);
 	}
 }
 
@@ -157,29 +159,29 @@ while (<READ>) {
  
 my $lastFile  = $listFile[-1];
 my $lastSize = $sizeFile{$lastFile};
-&printLog("last : $lastSize $lastFile");
+printLog("last : $lastSize $lastFile");
 
 # on le recupère dans /tmp
 if ($lastFile){
 	print WRITE "get $lastFile $tmpFile\n\n";
 	while (<READ>) {
 		last if /^$prompt$/;
-		&printLog($_);
+		printLog($_);
 	}
 }
 
 # on recupere le nombre de lignes du fichier
-my $nbBoursierACharger = &verifFile();
+my $nbBoursierACharger = verifFile();
 
-&printLog("$tmpFile ok : $nbBoursierACharger boursiers");
+printLog("$tmpFile ok : $nbBoursierACharger boursiers");
 
 
 
 # copie sur les portails
 
 foreach my $portail ( @PORTAIL ) {
-	&scp($portail);
-	&testSize($portail, $lastSize);
+	scp($portail);
+	testSize($portail, $lastSize);
 }
 
 
@@ -187,12 +189,12 @@ my $nbOk= 0;
 
 # demande  le reload des données
 foreach my $portail ( @PORTAIL ) {
-	my $nbBoursierCharge = &curl($portail);
+	my $nbBoursierCharge = curl($portail);
 	if ($nbBoursierCharge == $nbBoursierACharger) {
-		&printLog("Chargement terminé sans erreur.\n");
+		printLog("Chargement terminé sans erreur.\n");
 		$nbOk++;
 	}  else {
-		&printLog("ERREUR de chargement il devrait avoir $nbBoursierACharger chargement et non pas $nbBoursierCharge");
+		printLog("ERREUR de chargement il devrait avoir $nbBoursierACharger chargement et non pas $nbBoursierCharge");
 	}
 }
 
@@ -201,7 +203,7 @@ if ($nbOk == @PORTAIL) {
 	if (@listFile > $nbFtpFileToKeep) {
 		for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
 			print WRITE "rm $listFile[$cpt]\n\n";
-			&printLog(<READ>);
+			printLog(<READ>);
 			while (<READ>) {
 				last if /^$prompt$/;
 				print ;
@@ -209,6 +211,6 @@ if ($nbOk == @PORTAIL) {
 		}
 	}
 } else {
-	&printLog("ERROR : $nbOk portail chargé"); 
+	printLog("ERROR : $nbOk portail chargé"); 
 }
 

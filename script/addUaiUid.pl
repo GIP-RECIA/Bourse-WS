@@ -26,6 +26,7 @@ my $ldapHost = 'pigeon.giprecia.net';
 
 my $ldapUsr = 'cn=synchro,ou=administrateurs,dc=esco-centre,dc=fr';
 
+
 my $ldapPass;
 
 unless ($ldapPass) {
@@ -56,7 +57,7 @@ my %toUid;
 
 my %homonyme;
 
-sub lireLdapEtab(){
+sub lireLdapEtab{
 	my $uai = shift;
 	my $mesg = $ldap->search( base => "ou=people,dc=esco-centre,dc=fr",
 							filter => "(&(ObjectClass=ENTEleve)(ESCOUAI=$uai))",
@@ -82,7 +83,7 @@ sub lireLdapEtab(){
 }
 
 foreach my $uai (@UAI){
-    &lireLdapEtab($uai);
+    lireLdapEtab($uai);
 }
 
 
@@ -115,7 +116,7 @@ my %CORRESPONDANCE = (
 );
 
 
-sub normalize(){
+sub normalize {
     my $mot = shift;  
     $mot =  NFKD($mot);
     $mot =~ s/\p{NonspacingMark}//g;
@@ -126,7 +127,7 @@ sub normalize(){
     return uc($mot)
 }
 
-sub findUid() {
+sub findUid {
     my $cle = shift;
     my $uid = $homonyme{$cle};
     if ($uid) {
@@ -148,10 +149,10 @@ while (<>) {
         
         my $uai = $CORRESPONDANCE{$etab};
         if ($uai) {
-            my $nomN = &normalize( $nom );
-            my $prenomN = &normalize( $prenom );
+            my $nomN = normalize( $nom );
+            my $prenomN = normalize( $prenom );
             my $cle = "$nomN ${prenomN}_$uai";
-            my $uid = &findUid($cle);
+            my $uid = findUid($cle);
             if ($uid) {
                 print "$uid;$niveau;$uai\n";
             } else {
