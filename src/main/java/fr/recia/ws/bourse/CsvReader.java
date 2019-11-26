@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -33,19 +34,29 @@ public class CsvReader {
 	Map<String, Integer> ine2niveau = new HashMap<>();
 	Map<String, Integer> uid2niveau = new HashMap<>();
 	
-	
 	@PostConstruct
+	final public void loadFiles () {
+		synchronized (this) {
+			loadFileIne () ;
+			loadFileUid ();
+		}
+	}
+
+	
 	public Integer loadFileIne ()  {
 		Map<String, Integer> inLoadMap = new HashMap<>();
 		
 		int count = 0;
+		int nbline = 1;
 		try (	Scanner scannerFile = new Scanner(ResourceUtils.getFile(fileNameIne)) ) {
 			log.info(scannerFile.nextLine());
 			while (scannerFile.hasNextLine()) {
+				nbline++;
 				String line = "No init";
 				try ( Scanner scannerLine = new Scanner(line = scannerFile.nextLine()) ){
 					scannerLine.useDelimiter(P_STR);
 					log.debug("line = {}", line);
+					
 					if (scannerLine.next().length() > 0) { // on absorbe le 1er champs
 							// la colonne 2 donne l'ine
 							// la 3 le niveau de bourse
@@ -57,8 +68,11 @@ public class CsvReader {
 							count++;
 						} 
 					}
+					 
 				} catch (InputMismatchException e) {
-					log.error("InputMismatchException : {}" , line);
+					log.error("InputMismatchException :ligne {} : {}" ,nbline , line);
+				} catch (NoSuchElementException e) {
+					log.error("NoSuchElementException :ligne {} : {} ",nbline, line);
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -72,10 +86,11 @@ public class CsvReader {
 		return count;
 	}
 	
-	@PostConstruct
+	
 	public Integer loadFileUid () {
 		Map<String, Integer> inLoadMap = new HashMap<>();
 		int count = 0;
+		int nbline = 1;
 		try (	Scanner scannerFile = new Scanner(ResourceUtils.getFile(fileNameUid)) ) {
 			log.info(scannerFile.nextLine());
 			while (scannerFile.hasNextLine()) {
@@ -83,6 +98,7 @@ public class CsvReader {
 				try ( Scanner scannerLine = new Scanner(line = scannerFile.nextLine()) ){
 					scannerLine.useDelimiter(P_PV);
 					log.debug("line = {}", line);
+					
 					if (scannerLine.hasNext()) {
 						String uid =  scannerLine.next();
 						if (scannerLine.hasNext()) {
@@ -92,8 +108,11 @@ public class CsvReader {
 							count++;
 						}
 					}
-				}catch (InputMismatchException e) {
-					log.error("InputMismatchException : {}" , line);
+					
+				} catch (InputMismatchException e) {
+					log.error("InputMismatchException : ligne {} : {}" , nbline, line);
+				} catch (NoSuchElementException e) {
+					log.error("NoSuchElementException :ligne {} : {} ", nbline, line);
 				}
 			}
 		}catch (FileNotFoundException e) {
