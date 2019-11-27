@@ -10,7 +10,7 @@
 
     <groupId>fr.recia</groupId>
     <artifactId>bourse-ws</artifactId>
-    <version>0.1.7</version>
+    <version>0.1.8-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -33,7 +33,7 @@
 		<connection>scm:git:ssh://git@github.com/GIP-RECIA/Bourse-WS.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/GIP-RECIA/Bourse-WS.git</developerConnection>
 		<url>https://github.com/GIP-RECIA/Bourse-WS.git</url>
-		<tag>0.1.7</tag>
+		<tag>HEAD</tag>
 	</scm>
 
     <dependencies>
