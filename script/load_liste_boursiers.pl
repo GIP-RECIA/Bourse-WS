@@ -169,6 +169,12 @@ if ($lastFile){
 		printLog($_);
 	}
 }
+# on ajoute une ligne avec un compte de test;
+open TMP, ">> $tmpFile" or die $!;
+print TMP '"11995";"760495646YZ";"3";"2019-11-13 15:09:08";NULL',"\n";
+$lastSize++;
+
+close TMP;
 
 # on recupere le nombre de lignes du fichier
 my $nbBoursierACharger = verifFile();

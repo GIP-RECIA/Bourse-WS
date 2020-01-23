@@ -49,6 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		log.info("SecurityConfiguration configure: ip extern:{}; ip intern:{}" , ipExtern, ipIntern);
 	  
 		http.authorizeRequests()
+        	.antMatchers(HttpMethod.GET, "/health-check").permitAll()
 	    	.antMatchers(HttpMethod.GET, "/*").access(ipIntern)
 	    	.antMatchers(HttpMethod.POST, "/").access(ipExtern)
 	    	.anyRequest().denyAll()
