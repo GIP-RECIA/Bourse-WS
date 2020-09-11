@@ -19,9 +19,10 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class CsvReader {
-	private static final Logger log = LoggerFactory.getLogger(AllocController.class);
+	private static final Logger log = LoggerFactory.getLogger(CsvReader.class);
 	
-	private static final Pattern P_STR = Pattern.compile("\";\"");
+	private static final Pattern P_COT = Pattern.compile("\"");
+	//private static final Pattern P_STR = Pattern.compile("\";\"");
 	//private static final Pattern P_END = Pattern.compile("\\D");
 	private static final Pattern P_PV = Pattern.compile(";");
 	
@@ -48,27 +49,24 @@ public class CsvReader {
 		
 		int count = 0;
 		int nbline = 1;
+		log.debug("fileNameIne "+ fileNameIne);
 		try (	Scanner scannerFile = new Scanner(ResourceUtils.getFile(fileNameIne)) ) {
 			log.info(scannerFile.nextLine());
 			while (scannerFile.hasNextLine()) {
 				nbline++;
 				String line = "No init";
 				try ( Scanner scannerLine = new Scanner(line = scannerFile.nextLine()) ){
-					scannerLine.useDelimiter(P_STR);
+					scannerLine.useDelimiter(P_COT);
 					log.debug("line = {}", line);
 					
-					if (scannerLine.next().length() > 0) { // on absorbe le 1er champs
-							// la colonne 2 donne l'ine
-							// la 3 le niveau de bourse
-						if (scannerLine.hasNext()) {
-							String ine = scannerLine.next();
-							int niveau = scannerLine.nextInt();
-							log.debug("ine {} : niveau {}", ine , niveau);
-							inLoadMap.put(ine, niveau);
-							count++;
-						} 
+					String ine = scannerLine.next();
+					if (ine.length() > 10) {
+						scannerLine.next(); // on absorbe le ;
+						int niveau = scannerLine.nextInt();
+						log.debug("ine {} : niveau {}", ine , niveau);
+						inLoadMap.put(ine, niveau);
+						count++;
 					}
-					 
 				} catch (InputMismatchException e) {
 					log.error("InputMismatchException :ligne {} : {}" ,nbline , line);
 				} catch (NoSuchElementException e) {
