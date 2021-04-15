@@ -15,6 +15,10 @@ my @PORTAIL= qw(
 				portail11.giprecia.net
 				portail12.giprecia.net
 			);
+my @PORTAIL_ARRETE = qw (
+				autour.giprecia.net
+				butor.giprecia.net
+			);
 
 my $adr_ftp='rca_masterent@pinson.giprecia.net';
 
@@ -70,7 +74,7 @@ sub curl(){
 	open COM, "$com 2> /tmp/curl.error && echo  |" or die $!;
 	$line = <COM>;
 	print $line, "\n";
-	if ($line =~ /(\d+),(\d+)/){
+	if ($line =~ /^\[(\d+),(\d+)\]/){
 		$result = $1;
 	}
 	close COM;
@@ -144,7 +148,7 @@ sub verifFile(){
 	return $cpt;
 }
 my $nbBoursierACharger ;
-
+my $promptFtp;
 unless ($reloadOnly) {
 	#on ouvre la connexion sftp
 	&printLog("$sftp");
@@ -154,8 +158,8 @@ unless ($reloadOnly) {
 
 	#on recupere une ligne vide pour le prompt
 	print WRITE "\n";
-	my $prompt=<READ>;
-	chop $prompt;
+	$promptFtp=<READ>;
+	chop $promptFtp;
 
 
 	#on change de repertoire distant
@@ -170,7 +174,7 @@ unless ($reloadOnly) {
 	&printLog($_);
 
 	while (<READ>) {
-		last if /^$prompt$/;
+		last if /^$promptFtp$/;
 		print($_);
 		if (/(${prefixeFile}_\d{8}\.csv)$/) {
 			push @listFile, $1;
@@ -189,7 +193,7 @@ unless ($reloadOnly) {
 	if ($lastFile){
 		print WRITE "get $lastFile $tmpFile\n\n";
 		while (<READ>) {
-			last if /^$prompt$/;
+			last if /^$promptFtp$/;
 			&printLog($_);
 		}
 	}
@@ -231,20 +235,21 @@ foreach my $portail ( @PORTAIL ) {
 }
 
 unless ($reloadOnly) {
-	if ($nbOk == @PORTAIL) {
+	my $nbPortailOk  = @PORTAIL - @PORTAIL_ARRETE;
+	if ($nbOk == $nbPortailOk) {
 		# nettoyage du sftp:
 			if (@listFile > $nbFtpFileToKeep) {
 				for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
 					print WRITE "rm $listFile[$cpt]\n\n";
 					while (<READ>) {
-						last if /^$prompt$/;
+						last if /^$promptFtp$/;
 						&printLog($_);
 					}
 				}
 			}
 		
 	} else {
-		&printLog("ERROR : $nbOk portail chargé sur " . @PORTAIL ); 
+		&printLog("ERROR : $nbOk portail chargés sur $nPortailOk" ); 
 	}
 }
 
