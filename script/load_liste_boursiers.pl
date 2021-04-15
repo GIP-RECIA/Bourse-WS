@@ -143,6 +143,7 @@ sub verifFile(){
 	
 	return $cpt;
 }
+my $nbBoursierACharger ;
 
 unless ($reloadOnly) {
 	#on ouvre la connexion sftp
@@ -200,7 +201,7 @@ unless ($reloadOnly) {
 	#close TMP;
 
 	# on recupere le nombre de lignes du fichier
-	my $nbBoursierACharger = &verifFile();
+	$nbBoursierACharger = &verifFile();
 
 	&printLog("$tmpFile ok : $nbBoursierACharger boursiers");
 
@@ -230,18 +231,20 @@ foreach my $portail ( @PORTAIL ) {
 }
 
 unless ($reloadOnly) {
-	# nettoyage du sftp:
 	if ($nbOk == @PORTAIL) {
-		if (@listFile > $nbFtpFileToKeep) {
-			for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
-				print WRITE "rm $listFile[$cpt]\n\n";
-				while (<READ>) {
-					last if /^$prompt$/;
-					&printLog($_);
+		# nettoyage du sftp:
+			if (@listFile > $nbFtpFileToKeep) {
+				for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
+					print WRITE "rm $listFile[$cpt]\n\n";
+					while (<READ>) {
+						last if /^$prompt$/;
+						&printLog($_);
+					}
 				}
 			}
-		}
+		
 	} else {
-		&printLog("ERROR : $nbOk portail chargé"); 
+		&printLog("ERROR : $nbOk portail chargé sur " . @PORTAIL ); 
 	}
 }
+
