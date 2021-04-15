@@ -3,6 +3,19 @@
 use IPC::Open2;
 
 
+my @PORTAIL= qw(
+				ara.giprecia.net 
+				portail2.giprecia.net
+				portail3.giprecia.net
+				autour.giprecia.net
+				portail6.giprecia.net
+				butor.giprecia.net
+				portail9.giprecia.net
+				portail10.giprecia.net
+				portail11.giprecia.net
+				portail12.giprecia.net
+			);
+
 my $adr_ftp='rca_masterent@pinson.giprecia.net';
 
 my $rep_ftp = '/srv/catelaaf/exports/BOURSES-LYCEE/';
@@ -15,7 +28,6 @@ my $fileName = "$prefixeFile.csv";
 
 my $tmpFile = "/tmp/$fileName";
 
-my @PORTAIL= ('ara.giprecia.net', 'cacatoes.giprecia.net');
 
 my $rep_conf_portail = '/opt/uportal-properties/prod/niveau-bourse/';
 
@@ -77,14 +89,14 @@ sub printLog(){
  
 	my @localTime = localtime time;
 	my      $horodatage = sprintf(
-                                        '%d/%.2d/%.2d %.2d:%.2d:%.2d',
-                                        (1900 + $localTime[5])  ,
-                                        $localTime[4]+1,
-                                        $localTime[3],
-                                        $localTime[2],
-                                        $localTime[1],
-                                        $localTime[0]
-                                );
+										'%d/%.2d/%.2d %.2d:%.2d:%.2d',
+										(1900 + $localTime[5])  ,
+										$localTime[4]+1,
+										$localTime[3],
+										$localTime[2],
+										$localTime[1],
+										$localTime[0]
+								);
 
 	print $horodatage, "\t" , @_, "\n";
 }
