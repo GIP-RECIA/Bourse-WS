@@ -26,6 +26,18 @@ my $nbFtpFileToKeep = 2;
 #la commande sftp
 my $sftp = "/usr/bin/sftp -b- $adr_ftp";
 
+my $arg = shift;
+my $reloadOnly;
+if ($arg =~ /^(RE)?LOAD$/) {
+	$reloadOnly = $1;
+} else {
+	die "manque ou mauvais d'argument : LOAD | RELOAD";
+}
+
+print $reloadOnly, "load\n";
+
+
+
 #la commande scp
 sub scp(){
 	my $addr = shift;
@@ -120,101 +132,104 @@ sub verifFile(){
 	return $cpt;
 }
 
+unless ($reloadOnly) {
+	#on ouvre la connexion sftp
+	&printLog("$sftp");
+	open2 (READ, WRITE, $sftp ) or die "erreur connexion sftp: $!\n";
 
-#on ouvre la connexion sftp
-&printLog("$sftp");
-open2 (READ, WRITE, $sftp ) or die "erreur connexion sftp: $!\n";
+	&printLog("\t connexion ok");
 
-&printLog("\t connexion ok");
-
-#on recupere une ligne vide pour le prompt
-print WRITE "\n";
-my $prompt=<READ>;
-chop $prompt;
+	#on recupere une ligne vide pour le prompt
+	print WRITE "\n";
+	my $prompt=<READ>;
+	chop $prompt;
 
 
-#on change de repertoire distant
-print WRITE "cd $rep_ftp \n";
+	#on change de repertoire distant
+	print WRITE "cd $rep_ftp \n";
 
-$_=<READ>;
+	$_=<READ>;
 
-# on recupere la liste des fichiers
-print WRITE "ls -l ${prefixeFile}_*.csv\n\n";
+	# on recupere la liste des fichiers
+	print WRITE "ls -l ${prefixeFile}_*.csv\n\n";
 
-$_=<READ>;
-&printLog($_);
+	$_=<READ>;
+	&printLog($_);
 
-while (<READ>) {
-	last if /^$prompt$/;
-	print($_);
-	if (/(${prefixeFile}_\d{8}\.csv)$/) {
-		push @listFile, $1;
-		$sizeFile{$1} = &size($_);
-	}
-}
-
-# on determine le dernier fichier 
-@listFile = sort @listFile;
- 
-my $lastFile  = $listFile[-1];
-my $lastSize = $sizeFile{$lastFile};
-&printLog("last : $lastSize $lastFile");
-
-# on le recupère dans /tmp
-if ($lastFile){
-	print WRITE "get $lastFile $tmpFile\n\n";
 	while (<READ>) {
 		last if /^$prompt$/;
-		&printLog($_);
+		print($_);
+		if (/(${prefixeFile}_\d{8}\.csv)$/) {
+			push @listFile, $1;
+			$sizeFile{$1} = &size($_);
+		}
+	}
+
+	# on determine le dernier fichier 
+	@listFile = sort @listFile;
+	 
+	my $lastFile  = $listFile[-1];
+	my $lastSize = $sizeFile{$lastFile};
+	&printLog("last : $lastSize $lastFile");
+
+	# on le recupère dans /tmp
+	if ($lastFile){
+		print WRITE "get $lastFile $tmpFile\n\n";
+		while (<READ>) {
+			last if /^$prompt$/;
+			&printLog($_);
+		}
+	}
+
+	# on ajoute une ligne avec un compte de test;
+	#open TMP, ">> $tmpFile" or die $!;
+	#print TMP '"11995";"760495646YZ";"3";"2019-11-13 15:09:08";NULL',"\n";
+	#$lastSize += 53;
+	#close TMP;
+
+	# on recupere le nombre de lignes du fichier
+	my $nbBoursierACharger = &verifFile();
+
+	&printLog("$tmpFile ok : $nbBoursierACharger boursiers");
+
+
+
+	# copie sur les portails
+
+	foreach my $portail ( @PORTAIL ) {
+		&scp($portail);
+		&testSize($portail, $lastSize);
 	}
 }
-
-# on ajoute une ligne avec un compte de test;
-#open TMP, ">> $tmpFile" or die $!;
-#print TMP '"11995";"760495646YZ";"3";"2019-11-13 15:09:08";NULL',"\n";
-#$lastSize += 53;
-#close TMP;
-
-# on recupere le nombre de lignes du fichier
-my $nbBoursierACharger = &verifFile();
-
-&printLog("$tmpFile ok : $nbBoursierACharger boursiers");
-
-
-
-# copie sur les portails
-
-foreach my $portail ( @PORTAIL ) {
-	&scp($portail);
-	&testSize($portail, $lastSize);
-}
-
 
 my $nbOk= 0;
 
 # demande  le reload des données
 foreach my $portail ( @PORTAIL ) {
 	my $nbBoursierCharge = &curl($portail);
-	if ($nbBoursierCharge == $nbBoursierACharger) {
-		&printLog("Chargement terminé sans erreur.\n");
-		$nbOk++;
-	}  else {
-		&printLog("ERREUR de chargement il devrait avoir $nbBoursierACharger chargement et non pas $nbBoursierCharge");
-	}
-}
-
-# nettoyage du sftp:
-if ($nbOk == @PORTAIL) {
-	if (@listFile > $nbFtpFileToKeep) {
-		for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
-			print WRITE "rm $listFile[$cpt]\n\n";
-			while (<READ>) {
-				last if /^$prompt$/;
-				&printLog($_);
-			}
+	unless ($reloadOnly ) {
+		if ($nbBoursierCharge == $nbBoursierACharger) {
+			&printLog("Chargement terminé sans erreur.\n");
+			$nbOk++;
+		}  else {
+			&printLog("ERREUR de chargement il devrait avoir $nbBoursierACharger chargement et non pas $nbBoursierCharge");
 		}
 	}
-} else {
-	&printLog("ERROR : $nbOk portail chargé"); 
 }
 
+unless ($reloadOnly) {
+	# nettoyage du sftp:
+	if ($nbOk == @PORTAIL) {
+		if (@listFile > $nbFtpFileToKeep) {
+			for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
+				print WRITE "rm $listFile[$cpt]\n\n";
+				while (<READ>) {
+					last if /^$prompt$/;
+					&printLog($_);
+				}
+			}
+		}
+	} else {
+		&printLog("ERROR : $nbOk portail chargé"); 
+	}
+}

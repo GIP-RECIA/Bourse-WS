@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+die "code obsolete remplacé par load_liste_boursier.pl RELOAD \n";
+
 my $curl_format = 'curl -k  https://%s:8443/niveau-bourse/loaddata';
 
 
