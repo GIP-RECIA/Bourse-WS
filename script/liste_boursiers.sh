@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROG=/home/esco/load_liste_boursiers.pl LOAD
+PROG='/home/esco/load_liste_boursiers.pl LOAD'
 REP=/home/esco/logs
 
 FILE=load_liste_boursiers

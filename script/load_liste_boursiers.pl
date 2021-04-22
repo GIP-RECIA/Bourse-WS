@@ -236,7 +236,7 @@ foreach my $portail ( @PORTAIL ) {
 
 unless ($reloadOnly) {
 	my $nbPortailOk  = @PORTAIL - @PORTAIL_ARRETE;
-	if ($nbOk == $nbPortailOk) {
+	if ($nbOk >= $nbPortailOk) {
 		# nettoyage du sftp:
 			if (@listFile > $nbFtpFileToKeep) {
 				for (my $cpt = 0 ; $cpt < @listFile - $nbFtpFileToKeep; $cpt++){
@@ -248,8 +248,9 @@ unless ($reloadOnly) {
 				}
 			}
 		
+		&printLog("INFO : $nbOk portail chargés sur $nbPortailOk" ); 
 	} else {
-		&printLog("ERROR : $nbOk portail chargés sur $nPortailOk" ); 
+		&printLog("ERROR : $nbOk portail chargés sur $nbPortailOk" ); 
 	}
 }
 
