@@ -4,20 +4,13 @@ use IPC::Open2;
 
 
 my @PORTAIL= qw(
-				ara.giprecia.net 
-				portail2.giprecia.net
-				portail3.giprecia.net
-				autour.giprecia.net
-				portail6.giprecia.net
-				butor.giprecia.net
 				portail9.giprecia.net
 				portail10.giprecia.net
 				portail11.giprecia.net
 				portail12.giprecia.net
+				portail13.giprecia.net
 			);
 my @PORTAIL_ARRETE = qw (
-				autour.giprecia.net
-				butor.giprecia.net
 			);
 
 my $adr_ftp='rca_masterent@pinson.giprecia.net';
